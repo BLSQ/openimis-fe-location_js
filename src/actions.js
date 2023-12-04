@@ -105,6 +105,7 @@ export function fetchHealthFacility(mm, healthFacilityUuid, healthFacilityCode) 
     "catchments{id, location{id, uuid, code, name}, catchment}",
     "validityFrom",
     "validityTo",
+    "jsonExt",
   ];
   const payload = formatPageQuery("healthFacilities", filters, projections);
   return graphql(payload, "LOCATION_HEALTH_FACILITY");
@@ -133,6 +134,7 @@ export function fetchHealthFacilitySummaries(filters) {
     "validityFrom",
     "validityTo",
     "clientMutationId",
+    "jsonExt",
   ];
   const payload = formatPageQueryWithCount("healthFacilities", filters, projections);
   return graphql(payload, "LOCATION_HEALTH_FACILITY_SEARCHER");
@@ -308,6 +310,7 @@ function formatHealthFacilityGQL(hf) {
     ${!!hf.itemsPricelist ? `itemsPricelistId: ${decodeId(hf.itemsPricelist.id)}` : ""}
     ${!!hf.mutationExtensions ? `mutationExtensions: ${formatJsonField(hf.mutationExtensions)}` : ""}
     ${formatCatchments(hf.catchments)}
+    ${hf.jsonExt ? `jsonExt: ${formatJsonField(hf.jsonExt)}` : ""}
   `;
 }
 

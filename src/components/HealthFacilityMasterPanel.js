@@ -12,6 +12,7 @@ import {
 import { Grid } from "@material-ui/core";
 import { connect } from "react-redux";
 import { HFCodeValidationCheck, HFCodeValidationClear, HFCodeSetValid } from "../actions";
+import _ from "lodash";
 
 const styles = (theme) => ({
   item: theme.paper.item,
@@ -25,19 +26,32 @@ class HealthFacilityMasterPanel extends FormPanel {
     this.accCodeMandatory = props.modulesManager.getConf("fe-location", "healthFacilityForm.accCodeMandatory", false);
   }
 
+  updateAttributes = (updates) => {
+    let data = _.merge({}, this.state.data, updates);
+    this.props.onEditedChanged(data);
+  };
+
   updateRegion = (region) => {
+    let jsonExt = {
+      ward: null,
+    }
     this.updateAttributes({
       parentLocation: region,
       location: null,
+      jsonExt: jsonExt,
       servicesPricelist: null,
       itemsPricelist: null,
     });
   };
 
   updateDistrict = (district) => {
+    let jsonExt = {
+      ward: null,
+    }
     this.updateAttributes({
       parentLocation: !!district ? district.parent : null,
       location: district,
+      jsonExt: jsonExt,
       servicesPricelist: null,
       itemsPricelist: null,
     });
@@ -67,11 +81,13 @@ class HealthFacilityMasterPanel extends FormPanel {
           field={
             <Grid item xs={2} className={classes.item}>
               <PublishedComponent
-                pubRef="location.RegionPicker"
+                pubRef="location.LocationPicker"
                 value={edited.parentLocation}
-                withNull={true}
                 readOnly={readOnly}
-                onChange={(v, s) => this.updateRegion(v)}
+                withNull={true}
+                required={true}
+                onChange={(v) => this.updateRegion(v)}
+                locationLevel={0}
               />
             </Grid>
           }
@@ -82,13 +98,32 @@ class HealthFacilityMasterPanel extends FormPanel {
           field={
             <Grid item xs={2} className={classes.item}>
               <PublishedComponent
-                pubRef="location.DistrictPicker"
+                pubRef="location.LocationPicker"
                 value={edited.location}
                 readOnly={readOnly}
-                region={this.state.parentLocation}
                 withNull={true}
                 required={true}
-                onChange={(v, s) => this.updateDistrict(v)}
+                onChange={(v) => this.updateDistrict(v)}
+                parentLocation={edited.parentLocation}
+                locationLevel={1}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module="location"
+          id="HealthFacility.ward"
+          field={
+            <Grid item xs={2} className={classes.item}>
+              <PublishedComponent
+                pubRef="location.LocationPicker"
+                value={edited?.jsonExt?.ward ?? ""}
+                readOnly={readOnly}
+                withNull={true}
+                required={true}
+                onChange={(v) => this.updateExt("ward", v)} // storing the whole object in json for easy fetching and recreating in FE (even if it's creating a lot of redundant data in the DB)
+                parentLocation={edited.location}
+                locationLevel={2}
               />
             </Grid>
           }

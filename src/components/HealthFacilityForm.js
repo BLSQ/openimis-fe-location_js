@@ -35,6 +35,7 @@ class HealthFacilityForm extends Component {
 
   _newHealthFacility() {
     let hf = {};
+    hf.jsonExt = {};
     return hf;
   }
 
@@ -50,8 +51,11 @@ class HealthFacilityForm extends Component {
       !!this.props.fetchedHealthFacility &&
       !!this.props.healthFacility
     ) {
+      const { healthFacility } = this.props;
+      healthFacility.parentLocation = healthFacility.location.parent;
+      healthFacility.jsonExt = !!healthFacility.jsonExt ? JSON.parse(healthFacility.jsonExt) : {};
       this.setState((state, props) => ({
-        healthFacility: { ...props.healthFacility, parentLocation: props.healthFacility.location.parent },
+        healthFacility,
         healthFacility_uuid: props.healthFacility.uuid,
         lockNew: false,
         newHealthFacility: false,
