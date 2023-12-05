@@ -8,6 +8,7 @@ import {
   TextAreaInput,
   withModulesManager,
   ValidatedTextInput,
+  formatMessage,
 } from "@openimis/fe-core";
 import { Grid } from "@material-ui/core";
 import { connect } from "react-redux";
@@ -22,6 +23,7 @@ class HealthFacilityMasterPanel extends FormPanel {
   constructor(props) {
     super(props);
     this.codeMaxLength = props.modulesManager.getConf("fe-location", "healthFacilityForm.codeMaxLength", 8);
+    this.shortFormMaxLength = props.modulesManager.getConf("fe-location", "healthFacilityForm.shortFormMaxLength", 5);
     this.accCodeMaxLength = props.modulesManager.getConf("fe-location", "healthFacilityForm.accCodeMaxLength", 25);
     this.accCodeMandatory = props.modulesManager.getConf("fe-location", "healthFacilityForm.accCodeMandatory", false);
   }
@@ -63,6 +65,8 @@ class HealthFacilityMasterPanel extends FormPanel {
     return shouldValidate;
   };
 
+
+
   render() {
     const {
       classes,
@@ -81,6 +85,7 @@ class HealthFacilityMasterPanel extends FormPanel {
           field={
             <Grid item xs={2} className={classes.item}>
               <PublishedComponent
+                label={formatMessage(this.props.intl, "location", "HealthFacilityForm.region")}
                 pubRef="location.LocationPicker"
                 value={edited.parentLocation}
                 readOnly={readOnly}
@@ -99,6 +104,7 @@ class HealthFacilityMasterPanel extends FormPanel {
             <Grid item xs={2} className={classes.item}>
               <PublishedComponent
                 pubRef="location.LocationPicker"
+                label={formatMessage(this.props.intl, "location", "HealthFacilityForm.district")}
                 value={edited.location}
                 readOnly={readOnly}
                 withNull={true}
@@ -117,6 +123,7 @@ class HealthFacilityMasterPanel extends FormPanel {
             <Grid item xs={2} className={classes.item}>
               <PublishedComponent
                 pubRef="location.LocationPicker"
+                label={formatMessage(this.props.intl, "location", "HealthFacilityForm.ward")}
                 value={edited?.jsonExt?.ward ?? ""}
                 readOnly={readOnly}
                 withNull={true}
@@ -239,6 +246,26 @@ class HealthFacilityMasterPanel extends FormPanel {
                 onChange={(v, s) => this.updateAttribute("accCode", v)}
                 inputProps={{
                   "maxLength": this.accCodeMaxLength,
+                }}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module="location"
+          id="HealthFacility.shortForm"
+          field={
+            <Grid item xs={2} className={classes.item}>
+              <TextInput
+                module="location"
+                label="HealthFacilityForm.shortForm"
+                name="shortForm"
+                value={edited?.jsonExt?.short_form ?? ""}
+                readOnly={readOnly}
+                required
+                onChange={(v, s) => this.updateExt("short_form", v)}
+                inputProps={{
+                  "maxLength": this.shortFormMaxLength,
                 }}
               />
             </Grid>
