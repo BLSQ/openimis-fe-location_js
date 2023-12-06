@@ -12,7 +12,6 @@ import {
   Helmet,
 } from "@openimis/fe-core";
 import HealthFacilityMasterPanel from "../components/HealthFacilityMasterPanel";
-import HealthFacilityCatchmentPanel from "../components/HealthFacilityCatchmentPanel";
 import { fetchHealthFacility, clearHealthFacility } from "../actions";
 
 const HF_FORM_CONTRIBUTION_KEY = "location.HealthFacility";
@@ -103,6 +102,12 @@ class HealthFacilityForm extends Component {
     if (!this.state.healthFacility.careType) return false;
     if (!this.state.healthFacility.jsonExt.ward) return false;
     if (!this.state.healthFacility.jsonExt.short_form) return false;
+    if (!this.state.healthFacility.jsonExt.beds) return false;
+    if (!this.state.healthFacility.jsonExt.licenseStatus) return false;
+    if (!this.state.healthFacility.jsonExt.focalPerson) return false;
+    if (!this.state.healthFacility.jsonExt.grantID) return false;
+    if (!this.state.healthFacility.spimmContractStartDate) return false;
+    if (!this.state.healthFacility.spimmContractEndDate) return false;
     if (!!this.accCodeMandatory && !this.state.healthFacility.accCode) return false;
     return true;
   };
@@ -160,7 +165,7 @@ class HealthFacilityForm extends Component {
               reload={(healthFacility_uuid || readOnly) && this.reload}
               readOnly={readOnly}
               HeadPanel={HealthFacilityMasterPanel}
-              Panels={[this.HealthFacilityPriceListsPanel, HealthFacilityCatchmentPanel]}
+              Panels={[this.HealthFacilityPriceListsPanel]}
               onEditedChanged={this.onEditedChanged}
               actions={actions}
               contributedPanelsKey={HF_FORM_CONTRIBUTION_KEY}

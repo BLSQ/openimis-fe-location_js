@@ -105,6 +105,8 @@ export function fetchHealthFacility(mm, healthFacilityUuid, healthFacilityCode) 
     "catchments{id, location{id, uuid, code, name}, catchment}",
     "validityFrom",
     "validityTo",
+    "spimmContractStartDate",
+    "spimmContractEndDate",
     "jsonExt",
   ];
   const payload = formatPageQuery("healthFacilities", filters, projections);
@@ -310,6 +312,8 @@ function formatHealthFacilityGQL(hf) {
     ${!!hf.itemsPricelist ? `itemsPricelistId: ${decodeId(hf.itemsPricelist.id)}` : ""}
     ${!!hf.mutationExtensions ? `mutationExtensions: ${formatJsonField(hf.mutationExtensions)}` : ""}
     ${formatCatchments(hf.catchments)}
+    ${!!hf.spimmContractStartDate ? `spimmContractStartDate: "${hf.spimmContractStartDate}"` : ""}
+    ${!!hf.spimmContractEndDate ? `spimmContractEndDate: "${hf.spimmContractEndDate}"` : ""}
     ${hf.jsonExt ? `jsonExt: ${formatJsonField(hf.jsonExt)}` : ""}
   `;
 }
