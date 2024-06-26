@@ -17,12 +17,15 @@ const styles = (theme) => ({
   item: theme.paper.item,
 });
 
+const REGEX_NUMBER = new RegExp(/^\d+$/);
+
 class HealthFacilityMasterPanel extends FormPanel {
   constructor(props) {
     super(props);
     this.codeMaxLength = props.modulesManager.getConf("fe-location", "healthFacilityForm.codeMaxLength", 50);
     this.accCodeMaxLength = props.modulesManager.getConf("fe-location", "healthFacilityForm.accCodeMaxLength", 25);
     this.accCodeMandatory = props.modulesManager.getConf("fe-location", "healthFacilityForm.accCodeMandatory", false);
+    this.phoneLength = props.modulesManager.getConf("fe-location", "phoneLength", 15);
   }
 
   updateRegion = (region) => {
@@ -47,6 +50,19 @@ class HealthFacilityMasterPanel extends FormPanel {
     const { savedHFCode } = this.props;
     const shouldValidate = inputValue !== savedHFCode;
     return shouldValidate;
+  };
+
+  formatPhoneInput = (newValue) => {
+    if (newValue === undefined || newValue === null || REGEX_NUMBER.test(newValue)) {
+      return newValue;
+    }
+    let result = "";
+    for (const char of newValue) {
+      if (REGEX_NUMBER.test(char)) {
+        result += char;
+      }
+    }
+    return result;
   };
 
   render() {
@@ -248,6 +264,10 @@ class HealthFacilityMasterPanel extends FormPanel {
                 value={edited.phone}
                 readOnly={readOnly}
                 onChange={(v, s) => this.updateAttribute("phone", v)}
+                formatInput={(v) => this.formatPhoneInput(v)}
+                inputProps={{
+                  "maxLength": this.phoneLength,
+                }}
               />
             </Grid>
           }
